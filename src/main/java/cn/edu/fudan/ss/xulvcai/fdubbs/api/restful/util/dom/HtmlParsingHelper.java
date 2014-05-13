@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.ParagraphContent;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Content;
 
 
 
@@ -99,7 +99,7 @@ public class HtmlParsingHelper implements DomParsingHelper{
 	}
 
 	@Override
-	public List<ParagraphContent> getContentValueofNode(String xpathExpression, int index) {
+	public Content getContentValueofNode(String xpathExpression) {
 		// TODO Auto-generated method stub
 		return null;
 	}
