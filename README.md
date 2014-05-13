@@ -1,4 +1,3 @@
-The OpenShift `jbossas` cartridge documentation can be found at:
+The RESTful API for fudan bbs :
 
-
-https://github.com/openshift/origin-server/tree/master/cartridges/openshift-origin-cartridge-jbossas/README.md
+https://rest-fdubbs.rhcloud.com/
