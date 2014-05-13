@@ -13,8 +13,8 @@ import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.ParagraphContent;
-
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Content;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Image;
 
 
 
@@ -94,32 +94,40 @@ public class XmlParsingHelper implements DomParsingHelper{
 	}
 
 	@Override
-	public List<ParagraphContent> getContentValueofNode(String xpathExpression, int index) {
-		logger.debug("getContentValueofNode : " + xpathExpression + ", "+index);
-		List<ParagraphContent> values = new ArrayList<ParagraphContent>();
-		Node node = getNodeByXpathAndIndex(xpathExpression, index);
-		if(node == null) 
-			return values;
+	public Content getContentValueofNode(String xpathExpression) {
+		logger.debug("getContentValueofNode : " + xpathExpression);
 		
+		Content content = new Content();
+		StringBuilder stringBuilder = new StringBuilder();
 		
-		if(node.hasContent() && node.getNodeType() == Node.ELEMENT_NODE) {
-			getContentValueofElementNode(values, (Element)node);
+		int nodeNum = getNumberOfNodes(xpathExpression);
+		for(int index = 0; index < nodeNum; index++) {
+			Node node = getNodeByXpathAndIndex(xpathExpression, index);
+			
+			if(node == null) 
+				continue;
+			
+			if(node.hasContent() && node.getNodeType() == Node.ELEMENT_NODE) {
+				getContentValueofElementNode(content, stringBuilder, (Element)node);
+			}
+			stringBuilder.append("\n");
 		}
 		
-		return values;
+		content.setText(stringBuilder.toString());
+		return content;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void getContentValueofElementNode(List<ParagraphContent> values,
+	private void getContentValueofElementNode(Content content, StringBuilder stringBuilder,
 													Element element) {
 		List<Node> childNodes = element.content();
 		for (Node node : childNodes) {
 			logger.debug("Child Node : " + node.asXML());
 			if (node.getNodeType() == Node.TEXT_NODE) {
-				parseParagraphOnTextNode(values, node);
+				parseParagraphOnTextNode(stringBuilder, node);
 			}
 			else if (node.getNodeType() == Node.ELEMENT_NODE) {
-				parseParagraphOnElementNode(values, (Element)node);
+				parseParagraphOnElementNode(content, stringBuilder, (Element)node);
 			}
 			else {
 				logger.debug("Unsupport Type : " + node.getNodeTypeName());
@@ -129,54 +137,49 @@ public class XmlParsingHelper implements DomParsingHelper{
 
 	}
 
-	private void parseParagraphOnTextNode(List<ParagraphContent> values,
-			Node node) {
+	private void parseParagraphOnTextNode(StringBuilder stringBuilder, Node node) {
 		if (!"".equals(node.getText())) {
 			logger.debug("TEXT Node : " + node.getText());
-			ParagraphContent content = new ParagraphContent().withContent(node.getText());
-			values.add(content);
+			stringBuilder.append(node.getText());
 		}
 	}
 
-	private void parseParagraphOnElementNode(List<ParagraphContent> values,
-			Element element) {
+	private void parseParagraphOnElementNode(Content content, 
+			StringBuilder stringBuilder, Element element) {
 		
 		String elementName = element.getName();
 		logger.debug("elementName : " + elementName);
 		logger.debug("Origin xml value : " + element.asXML());
 		if ("br".equalsIgnoreCase(elementName)) {
-			ParagraphContent content = new ParagraphContent().withIsNewline(true);
-			values.add(content);
+			stringBuilder.append("\n");
 		}
 		else if ("a".equalsIgnoreCase(elementName)) {
-			parseParagraphOnLinkNode(values, element);
+			parseParagraphOnLinkNode(content, stringBuilder, element);
 		}
 		else if ("c".equalsIgnoreCase(elementName)) {
-			parseParagraphOnTextNode(values, element);
+			parseParagraphOnTextNode(stringBuilder, element);
 		}
 		else {
-			getContentValueofElementNode(values, element);
+			getContentValueofElementNode(content, stringBuilder, element);
 		}	
 	}
 
-	private void parseParagraphOnLinkNode(List<ParagraphContent> values,
-			Node node) {
+	private void parseParagraphOnLinkNode(Content content,
+			StringBuilder stringBuilder, Node node) {
 		
 		String imageTag = getAttributeValueOnLinkNode(node, "i");
 		String linkRef = getAttributeValueOnLinkNode(node, "href");
 		logger.debug("imageTag : "+imageTag+", linkRef : "+linkRef);
 		
-		ParagraphContent content = new ParagraphContent()
-			.withIsLink(true)
-			.withLinkRef(linkRef)
-			.withIsImage("i".equals(imageTag));
-		
-		if (node.hasContent()) {
-			logger.debug("content : " + node.getText());
-			content.setContent(node.getText());
+		if ("i".equals(imageTag)) {
+			Image image = new Image();
+			image.setRef(linkRef);
+			image.setPos(stringBuilder.length());
+			content.getImages().add(image);
 		}
-		
-		values.add(content);
+		else {
+			stringBuilder.append(linkRef);
+		}
 	}
 	
 	private String getAttributeValueOnLinkNode(Node node, String attributName) {
@@ -209,11 +212,13 @@ public class XmlParsingHelper implements DomParsingHelper{
 	
 	public static void main(String[] args) throws Exception {
 		
-		PropertyConfigurator.configure("src/resource/log4j.properties");
+		PropertyConfigurator.configure("src/main/resource/log4j.properties");
 		
 		
-		String content = "<?xml version=\"1.0\" encoding=\"gb18030\"?><?xml-stylesheet type=\"text/xsl\" href=\"../xsl/bbs.xsl?v1416\"?><bbscon link='con' bid='40' anony='0' attach='0'><session m=''><p>lt  </p><u>hidennis</u><f><b>Arch_Compiler</b><b>C</b><b>Database</b><b>Emprise</b><b>Fantasy</b><b>FDU_Software</b><b>Feelings</b><b>FM_Ecommodity</b><b>FM_Ticket</b><b>Geography</b><b>Graduate</b><b>GuangDong</b><b>History</b><b>Java</b><b>Job_Intern</b><b>Job_IT</b><b>Job_Servant</b><b>Joke</b><b>KaoYan</b><b>Lessons</b><b>Love</b><b>M_GuangHua</b><b>M_Library</b><b>M_Zhangjiang</b><b>Mac</b><b>Magpie_Bridge</b><b>MerchantAgent</b><b>MobilePhone</b><b>Movie</b><b>MS_Windows</b><b>Net_Resource</b><b>Network</b><b>News</b><b>NR_Movie</b><b>NR_Music</b><b>NR_TV</b><b>Outdoors</b><b>PIC</b><b>Practice</b><b>Single</b><b>Software_06</b><b>Travel</b><b>TV</b><b>Undergraduate</b><b>Unix</b><b>Virus</b><b>Zone_C.S.</b><b>Zone_Software</b><b>OMTV</b><b>Employees</b><b>FM_PC</b><b>IT</b><b>ZJSecondhand</b><b>Losers</b><b>MyShow</b><b>Teacher</b><b>Badminton</b><b>Heart</b><b>Food</b><b>Photography</b><b>Railway</b><b>Android</b><b>Job_Plaza</b><b>M_Career</b></f></session><po fid='363147' tlast='1'><owner>xiaoxiaowu</owner><nick>xiaoxiaowu</nick><board>Job_Intern</board><title>2014微软实习生技术类职位网申今天就要截止了&#160;&#160;&#160;&#160;&#160;未来一触即变，IT女</title><date>2014年03月31日12:11:41 星期一</date><pa m='t'><p>&#160;</p><p>2014微软实习生技术类职位网申今天就要截止了&#160;&#160;&#160;&#160;&#160;未来一触即变，IT女生变女神！</p><p>　　亲，你造吗？微软实习生招聘开始啦！2015年毕业的你，想成为编程达人吗？想得到最专业mentor的技术指导吗？想在秋招大战打响前就得到Offer吗？那就快快点击鼠标申请吧。未来一触即变！</p><p>　　如果你是IT女生，400度近视、大眼袋黑眼圈一个都不少、皮肤黯淡无光永远都木有男朋友！这是你想要的生活么？未来一触即变微软“IT女神”打造计划已经启动，转发微博<a href='http://weibo.com/3488805082'>1234567890</a>喊出#未来一触即变#+你希望的未来职场生活@3位女性好友，既有机会获得微软“情侣双人电影票”及微软实习生招募宣讲会“女神VIP”专席&#160;女生节专属好礼，3月31日前，女生简历网申量最大的学校，更有微软求职大讲堂来到你的身边；</p><p>　　　2014微软实习生招募信息</p><p>实习职位：职位涵盖软件开发，技术支持和销售市场等领域</p><p>实习地点：北京、上海、无锡、苏州、广州</p><p>实习期限：实习生在微软的实习期通常需要达到三个月或以上，形式分全职兼职两种，全职实习生周一至周五工作5天，兼职实习生一周需要保证工作3个工作日以上。我们鼓励同学们在假期进行全职实习，以获得更全面连贯的实习项目经验。</p><p>网申请登录微软校园招聘官网：www.joinms.com&#160;，或登录bing.com搜索‘微软实习生招聘’</p><p>网申的同学可以直接获得网上测评的机会。</p><p>网申截止日期：技术类职位3月31日,&amp;nbsp;非技术类职位&amp;nbsp;4月18日</p><p>宣讲安排：3月中旬至3月下旬&amp;nbsp;(具体行程请参考微软校招官网)</p><p>笔试：4月上旬</p><p>面试：4月中旬开始</p><p>Offer发放：5月开始</p><p>入职：6月开始</p><p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;更多微软实习生招募实时动态请关注微软招聘官方微博：<a href='http://weibo.com/u/3488805082'/></p></pa><pa m='s'><p>--</p><p><c h='0' f='37' b='40'></c><c h='1' f='33' b='40'>※&#160;来源:·日月光华&#160;bbs.fudan.edu.cn·HTTP&#160;[FROM:&#160;58.209.191.*]</c><c h='0' f='37' b='40'></c></p></pa></po></bbscon>";
-		DomParsingHelper domParsingHelper = XmlParsingHelper.parseText(content);
+		String contentString = "<?xml version=\"1.0\" encoding=\"gb18030\"?><?xml-stylesheet type=\"text/xsl\" href=\"../xsl/bbs.xsl?v1416\"?><bbscon link='con' bid='40' anony='0' attach='0'><session m=''><p>lt  </p><u>hidennis</u><f><b>Arch_Compiler</b><b>C</b><b>Database</b><b>Emprise</b><b>Fantasy</b><b>FDU_Software</b><b>Feelings</b><b>FM_Ecommodity</b><b>FM_Ticket</b><b>Geography</b><b>Graduate</b><b>GuangDong</b><b>History</b><b>Java</b><b>Job_Intern</b><b>Job_IT</b><b>Job_Servant</b><b>Joke</b><b>KaoYan</b><b>Lessons</b><b>Love</b><b>M_GuangHua</b><b>M_Library</b><b>M_Zhangjiang</b><b>Mac</b><b>Magpie_Bridge</b><b>MerchantAgent</b><b>MobilePhone</b><b>Movie</b><b>MS_Windows</b><b>Net_Resource</b><b>Network</b><b>News</b><b>NR_Movie</b><b>NR_Music</b><b>NR_TV</b><b>Outdoors</b><b>PIC</b><b>Practice</b><b>Single</b><b>Software_06</b><b>Travel</b><b>TV</b><b>Undergraduate</b><b>Unix</b><b>Virus</b><b>Zone_C.S.</b><b>Zone_Software</b><b>OMTV</b><b>Employees</b><b>FM_PC</b><b>IT</b><b>ZJSecondhand</b><b>Losers</b><b>MyShow</b><b>Teacher</b><b>Badminton</b><b>Heart</b><b>Food</b><b>Photography</b><b>Railway</b><b>Android</b><b>Job_Plaza</b><b>M_Career</b></f></session><po fid='363147' tlast='1'><owner>xiaoxiaowu</owner><nick>xiaoxiaowu</nick><board>Job_Intern</board><title>2014微软实习生技术类职位网申今天就要截止了&#160;&#160;&#160;&#160;&#160;未来一触即变，IT女</title><date>2014年03月31日12:11:41 星期一</date>"
+				+ "<pa m=\"t\"><p><a i=\"i\" href=\"http://bbs.fudan.edu.cn/upload/PIC/1266584358-5351.jpg\" /></p><p>eBay中国技术研发中心2014实习生网申启动！<a i=\"i\" href=\"http://bbs.fudan.edu.cn/upload/PIC/1266584358-5351.jpg\" />（2014暑期项目召集令！）</p><p><br /></p><p>想在一流的平台一窥电子商务的奥秘吗？想亲身参与前沿技术的创新项目吗？想和eBay, PayPal的大牛们一起参与云计算，大数据，机器学习，商业和风险分析的深入研讨吗? eBay Inc. 将为你提供丰富而有趣的实习平台，实现你的梦想！</p><p>欢迎计算机，软件，电子科学与工程，数学与统计和经济管理，生物等专业和方向大三和研究生一年级，二年级的学生</p><p>在这里</p><p>您将会有机会参加eBay Inc.暑期两个月创新研发项目中 ！</p><p>50%的机会将会在明年转成正式员工！ </p><p>您可以有长期实习的机会！</p><p>度过充实而丰富的暑假！</p><p><br /></p><p>网申及各职位介绍：<a href=\"http://vip.yingjiesheng.com/2014/ebay\" /></p><p><br /></p><p>校园宣讲及笔试行程：（以网站上的信息为准）</p><p>2014年3月29日 南京大学仙林校区 10:00AM   仙林校区10食堂3F就业中心302</p><p>2014年4月 1日   同济大学嘉定校区 15:00PM   济人楼312</p><p>2014年4月2日   交通大学闵行校区 14:00PM   学术活动中心宣讲厅</p><p>2014年4月8日   复旦大学张江校区 14:00PM   张江行政楼106</p><p>2014年4月11日 浙江大学玉泉校区18:00PM   永谦第一报告厅</p><p><br /></p><p>宣讲会将会介绍eBay Inc. 最新动向，以及在云技术，搜索，大数据等各个方向的技术成就，同时我们会分享2014 intern program的具体信息。</p><p>宣讲后讲直接进行笔试，宣讲会将会公布笔试的具体地点。</p><p>如有任何问题，可以发email到 interns@ebay.com ,我们将尽快的回复您。</p><p> </p><p>可以扫描亿贝技术招聘的官方微信，我们会有实时校招信息更新</p><p><br /></p><p><br /></p><p>招聘流程：</p><p>1. 宣讲之前在线填写简历，简历请标明GPA和专业排名</p><p>请登入<a href=\"http://vip.yingjiesheng.com/2014/ebay\" />进行在线申请（请在宣讲会之前提交简历，会根据您的简历信息安排相应的笔试场地）</p><p>详细职位信息及申请请点击<a href=\"http://vip.yingjiesheng.com/2014/ebay/interns_hp.html\" /></p><p>实习生创新项目请参考：<a href=\"http://vip.yingjiesheng.com/2014/ebay/interns_hd.html\" /></p><p><br /></p><p><br /></p></pa>"
+				+ "<pa m='s'><p>--</p><p><c h='0' f='37' b='40'></c><c h='1' f='33' b='40'>※&#160;来源:·日月光华&#160;bbs.fudan.edu.cn·HTTP&#160;[FROM:&#160;58.209.191.*]</c><c h='0' f='37' b='40'></c></p></pa></po></bbscon>";
+		DomParsingHelper domParsingHelper = XmlParsingHelper.parseText(contentString);
 		String xpathExpression = "bbscon/po";
 		int index = 0;
 		String xpathOfParagraph = xpathExpression+"["+(index+1)+"]/pa";
@@ -221,14 +226,9 @@ public class XmlParsingHelper implements DomParsingHelper{
 		int paraNum = domParsingHelper.getNumberOfNodes(xpathOfParagraph);
 		for(int paraCount = 0; paraCount < paraNum; paraCount++) {
 			String xpathOfParaContent = xpathOfParagraph+"["+(paraCount+1)+"]/p";
-			int paraCountNum = domParsingHelper.getNumberOfNodes(xpathOfParaContent);
-			for(int paraContentCount = 0; paraContentCount < paraCountNum; paraContentCount++) {
-				domParsingHelper.getContentValueofNode(xpathOfParaContent, paraContentCount);
-			}
 			
-			
-			
-			
+			Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
+			System.out.println(content.toString());
 		}
 		
 	}

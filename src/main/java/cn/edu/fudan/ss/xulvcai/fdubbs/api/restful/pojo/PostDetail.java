@@ -20,7 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 
 /**
- * top post
+ * post detail
  * 
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
@@ -41,24 +41,23 @@ public class PostDetail {
     @JsonProperty("post_meta_data")
     private PostMetaData postMetaData;
     /**
-     * body
-     * (Required)
+     * content
      * 
      */
     @JsonProperty("body")
-    private List<Paragraph> body = new ArrayList<Paragraph>();
+    private Content body;
     /**
-     * qoute
+     * content
      * 
      */
     @JsonProperty("qoute")
-    private List<Paragraph> qoute = new ArrayList<Paragraph>();
+    private Content qoute;
     /**
-     * sign
+     * content
      * 
      */
     @JsonProperty("sign")
-    private List<Paragraph> sign = new ArrayList<Paragraph>();
+    private Content sign;
     /**
      * replies
      * 
@@ -91,72 +90,70 @@ public class PostDetail {
     }
 
     /**
-     * body
-     * (Required)
+     * content
      * 
      */
     @JsonProperty("body")
-    public List<Paragraph> getBody() {
+    public Content getBody() {
         return body;
     }
 
     /**
-     * body
-     * (Required)
+     * content
      * 
      */
     @JsonProperty("body")
-    public void setBody(List<Paragraph> body) {
+    public void setBody(Content body) {
         this.body = body;
     }
 
-    public PostDetail withBody(List<Paragraph> body) {
+    public PostDetail withBody(Content body) {
         this.body = body;
         return this;
     }
 
     /**
-     * qoute
+     * content
      * 
      */
     @JsonProperty("qoute")
-    public List<Paragraph> getQoute() {
+    public Content getQoute() {
         return qoute;
     }
 
     /**
-     * qoute
+     * content
      * 
      */
     @JsonProperty("qoute")
-    public void setQoute(List<Paragraph> qoute) {
+    public void setQoute(Content qoute) {
         this.qoute = qoute;
     }
 
-    public PostDetail withQoute(List<Paragraph> qoute) {
+    public PostDetail withQoute(Content qoute) {
         this.qoute = qoute;
         return this;
     }
 
     /**
-     * sign
+     * content
      * 
      */
     @JsonProperty("sign")
-    public List<Paragraph> getSign() {
+    public Content getSign() {
         return sign;
     }
 
     /**
-     * sign
+     * content
      * 
      */
     @JsonProperty("sign")
-    public void setSign(List<Paragraph> sign) {
+    public void setSign(Content sign) {
         this.sign = sign;
     }
 
-    public PostDetail withSign(List<Paragraph> sign) {
+    public PostDetail withSign(Content sign) {
         this.sign = sign;
         return this;
     }

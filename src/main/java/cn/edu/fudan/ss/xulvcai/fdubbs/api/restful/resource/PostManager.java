@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.exception.InvalidParameterException;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.BoardMetaData;
-import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Paragraph;
-import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.ParagraphContent;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Content;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostDetail;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostMetaData;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummary;
@@ -315,23 +314,18 @@ public class PostManager {
 		
 		int paraNum = domParsingHelper.getNumberOfNodes(xpathOfParagraph);
 		for(int paraCount = 0; paraCount < paraNum; paraCount++) {
-			List<Paragraph> paragraphs = new LinkedList<Paragraph>();
-			String xpathOfParaContent = xpathOfParagraph+"["+(paraCount+1)+"]/p";
-			int paraCountNum = domParsingHelper.getNumberOfNodes(xpathOfParaContent);
-			for(int paraContentCount = 0; paraContentCount < paraCountNum; paraContentCount++) {
-				Paragraph paragraph = new Paragraph();
-				List<ParagraphContent> contents = domParsingHelper.getContentValueofNode(xpathOfParaContent, paraContentCount);
-				paragraph.getParagraphContent().addAll(contents);
-				paragraphs.add(paragraph);
-			}
 			
+			String xpathOfParaContent = xpathOfParagraph+"["+(paraCount+1)+"]/p";
+			
+			Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
+
 			String type  = domParsingHelper.getAttributeTextValueOfNode("m", xpathOfParagraph, paraCount);
 			if("t".equalsIgnoreCase(type)) {
-				postDetail.setBody(paragraphs);
+				postDetail.setBody(content);
 			} else if("q".equalsIgnoreCase(type)) {
-				postDetail.setQoute(paragraphs);
+				postDetail.setQoute(content);
 			} else if("s".equalsIgnoreCase(type)) {
-				postDetail.setSign(paragraphs);
+				postDetail.setSign(content);
 			}
 			
 		}
