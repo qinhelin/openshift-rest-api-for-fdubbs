@@ -1,6 +1,8 @@
 package cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.resource;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.annotation.Generated;
 import javax.ws.rs.GET;
@@ -38,7 +40,10 @@ public class HeartBeatManager {
     "server_name",
     "date",
     "request_count",
-    "error_info"
+    "error_info",
+    "local_time_zone",
+    "local_hour",
+    "shanghai_hour"
 })
 class ServerHeartBeat {
 	@JsonProperty("server_name")
@@ -53,8 +58,23 @@ class ServerHeartBeat {
 	@JsonProperty("error_info")
 	private String errorInfo;
 	
+	@JsonProperty("local_time_zone")
+	private String localTimeZone;
+	
+	@JsonProperty("local_hour")
+	private int localHour;
+	
+	@JsonProperty("shanghai_hour")
+	private int shanghaiHour;
+	
+	private Calendar calendar;
 	ServerHeartBeat() {
 		date = new Date();
+		calendar = Calendar.getInstance();
+		localTimeZone = calendar.getTimeZone().getID();
+		localHour = calendar.get(Calendar.HOUR_OF_DAY);
+		calendar.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+		shanghaiHour = calendar.get(Calendar.HOUR_OF_DAY);
 	}
 	
 	@JsonProperty("error_info")
@@ -117,5 +137,49 @@ class ServerHeartBeat {
         return this;
     }
 	
+	@JsonProperty("local_time_zone")
+	public String getLocalTimeZone() {
+		return localTimeZone;
+	}
+	
+	@JsonProperty("local_time_zone")
+	public void setLocalTimeZone(String localTimeZone) {
+		this.localTimeZone = localTimeZone;
+	}
+	
+	public ServerHeartBeat withLocalTimeZone(String localTimeZone) {
+		this.localTimeZone = localTimeZone;
+        return this;
+    }
+	
+	@JsonProperty("local_hour")
+    public int getLocalHour() {
+        return localHour;
+    }
+	
+	@JsonProperty("local_hour")
+    public void setLocalHour(int localHour) {
+		this.localHour = localHour;
+    }
+	
+	public ServerHeartBeat withLocalHour(int localHour) {
+		this.localHour = localHour;
+        return this;
+    }
+	
+	@JsonProperty("shanghai_hour")
+    public int getShanghaiHour() {
+        return shanghaiHour;
+    }
+	
+	@JsonProperty("shanghai_hour")
+    public void setShanghaiHour(int shanghaiHour) {
+		this.shanghaiHour = shanghaiHour;
+    }
+	
+	public ServerHeartBeat withShanghaiHour(int shanghaiHour) {
+		this.shanghaiHour = shanghaiHour;
+        return this;
+    }
 	
 }

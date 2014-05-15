@@ -48,10 +48,16 @@ public class PostManager {
 	
 	private static Logger logger = LoggerFactory.getLogger(PostManager.class);
 
+	public static void main(String[] args) {
+		shouldGenerateDebugData();
+	}
 	
 	private static boolean shouldGenerateDebugData() {
-		Calendar ca = Calendar.getInstance(TimeZone.getTimeZone("Asia/ShangHai"));
-		int hour=ca.get(Calendar.HOUR_OF_DAY);
+		Calendar cal = Calendar.getInstance();
+		
+		TimeZone tzSave = cal.getTimeZone();
+		System.out.println("current timezone : " + tzSave);
+		int hour=cal.get(Calendar.HOUR_OF_DAY);
 		
 		return debugSupported && (hour < 9);
 	}
