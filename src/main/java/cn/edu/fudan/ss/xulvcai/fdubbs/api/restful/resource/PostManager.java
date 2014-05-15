@@ -289,7 +289,7 @@ public class PostManager {
 		postMetaData.setOwner("hidennis");
 		postMetaData.setTitle("eBay中国技术研发中心2014实习生网申启动！（2014暑期项目召集令！）");
 		postMetaData.setDate("5月16日11:11");
-		
+		postMetaData.setPostId("123456789");
 		
 		String text = "eBay中国技术研发中心2014实习生网申启动！（2014暑期项目召集令！）\n\n\n" +
 					"想在一流的平台一窥电子商务的奥秘吗？想亲身参与前沿技术的创新项目吗？想和eBay, PayPal的大牛们一起参与云计算，大数据，机器学习，商业和风险分析的深入研讨吗? "
@@ -586,7 +586,7 @@ public class PostManager {
 		postMetaData.setBoard("test");
 		postMetaData.setOwner("user");
 		postMetaData.setTitle("title");
-		
+		postMetaData.setPostId("123456789");
 		int nodeCount = 10;
 		for(int index = 0; index < nodeCount; index++) {
 			PostSummary topPost = new PostSummary();
