@@ -3,8 +3,10 @@ package cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.resource;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.exception.InvalidParameterException;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.BoardMetaData;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Content;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Image;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostDetail;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostMetaData;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummary;
@@ -38,11 +41,20 @@ import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.http.HttpParsingHelper.Ht
 @Path("/post")
 public class PostManager {
 
+	private static final boolean debugSupported = true;
 	private static final String NORMAL_LIST_MODE = "normal";
 	private static final String TOPIC_LIST_MODE = "topic";
 	private static final int POST_NUMBER_PER_REQUEST = 20;
 	
 	private static Logger logger = LoggerFactory.getLogger(PostManager.class);
+
+	
+	private static boolean shouldGenerateDebugData() {
+		Calendar ca = Calendar.getInstance(TimeZone.getTimeZone("Asia/ShangHai"));
+		int hour=ca.get(Calendar.HOUR_OF_DAY);
+		
+		return debugSupported && (hour < 9);
+	}
 	
 	@GET
 	@Path("/top10")
@@ -240,6 +252,10 @@ public class PostManager {
 	private PostDetail getPostDetailByBoardNameAndPostIdFromServer(String authCode, 
 			String boardName, long postId) throws Exception {
 
+		if (shouldGenerateDebugData()) {
+			return generateDebugPostDetail();
+		}
+		
 		ReusableHttpClient reusableClient = HttpClientManager.getInstance().getReusableClient(authCode, true);
 		
 		String path = "/bbs/tcon";
@@ -258,6 +274,37 @@ public class PostManager {
 		response.close();
 		
 		return constructPostDetail(domParsingHelper, true);
+	}
+	
+	private PostDetail generateDebugPostDetail() {
+		
+		
+		PostMetaData postMetaData = new PostMetaData();
+		postMetaData.setBoard("Hire");
+		postMetaData.setOwner("hidennis");
+		postMetaData.setTitle("eBay中国技术研发中心2014实习生网申启动！（2014暑期项目召集令！）");
+		postMetaData.setDate("5月16日11:11");
+		
+		
+		String text = "eBay中国技术研发中心2014实习生网申启动！（2014暑期项目召集令！）\n\n\n" +
+					"想在一流的平台一窥电子商务的奥秘吗？想亲身参与前沿技术的创新项目吗？想和eBay, PayPal的大牛们一起参与云计算，大数据，机器学习，商业和风险分析的深入研讨吗? "
+					+ "eBay Inc. 将为你提供丰富而有趣的实习平台，实现你的梦想！欢迎计算机，软件，电子科学与工程，数学与统计和经济管理，生物等专业和方向大三和研究生一年级，二年级的学生"
+					+ "在这里您将会有机会参加eBay Inc.暑期两个月创新研发项目中 ！50%的机会将会在明年转成正式员工！ 您可以有长期实习的机会！度过充实而丰富的暑假！"
+					+ "网申及各职位介绍：http://vip.yingjiesheng.com/2014/ebay \n"
+					+ "如有任何问题，可以发email到 interns@ebay.com ,我们将尽快的回复您。";
+		
+		List<Image> images = new ArrayList<Image>();
+		images.add(new Image().withRef("aa").withPos(10));
+		images.add(new Image().withRef("bb").withPos(25));
+		
+		Content body = new Content();
+		body.setText(text);
+		body.setImages(images);
+		
+		PostDetail postDetail = new PostDetail();
+		postDetail.setPostMetaData(postMetaData);
+		postDetail.setBody(body);
+		return postDetail;
 	}
 	
 	private PostDetail constructPostDetail(DomParsingHelper domParsingHelper, boolean isTopicMode) {
@@ -498,6 +545,9 @@ public class PostManager {
 	
 	
 	private List<PostSummary> getTopPostsFromServer(String authCode) throws Exception {
+		if (shouldGenerateDebugData()) {
+			return generateDebugTopPosts();
+		}
 		
 		ReusableHttpClient reusableClient = HttpClientManager.getInstance().getReusableClient(authCode, true);
 		
@@ -521,6 +571,24 @@ public class PostManager {
 			toPosts.add(topPost);
 		}
 		
+		return toPosts;
+	}
+	
+	private List<PostSummary> generateDebugTopPosts() {
+		List<PostSummary> toPosts = new ArrayList<PostSummary>();
+		
+		PostMetaData postMetaData = new PostMetaData();
+		postMetaData.setBoard("test");
+		postMetaData.setOwner("user");
+		postMetaData.setTitle("title");
+		
+		int nodeCount = 10;
+		for(int index = 0; index < nodeCount; index++) {
+			PostSummary topPost = new PostSummary();
+			topPost.setPostMetaData(postMetaData);
+			topPost.setCount("1001");
+			toPosts.add(topPost);
+		}
 		return toPosts;
 	}
 	
