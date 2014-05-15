@@ -53,13 +53,12 @@ public class PostManager {
 	}
 	
 	private static boolean shouldGenerateDebugData() {
-		Calendar cal = Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance();
 		
-		TimeZone tzSave = cal.getTimeZone();
-		System.out.println("current timezone : " + tzSave);
-		int hour=cal.get(Calendar.HOUR_OF_DAY);
+		calendar.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+		int shanghaiHour = calendar.get(Calendar.HOUR_OF_DAY);
 		
-		return debugSupported && (hour < 9);
+		return debugSupported && (shanghaiHour < 9);
 	}
 	
 	@GET
