@@ -30,6 +30,7 @@ import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostDetail;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostMetaData;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummary;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummaryInBoard;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Replies;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.RESTErrorStatus;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.StringConvertHelper;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.dom.DomParsingHelper;
@@ -322,25 +323,28 @@ public class PostManager {
 			xpathExpression = "bbscon/po";
 		}
 		
-		PostDetail postDetail = constructPostDetail(domParsingHelper, xpathExpression, 0);
+		PostDetail postDetail = constructPostDetail(domParsingHelper, xpathExpression, 0, true);
 		
 		if(isTopicMode) {
 			int nodeCount = domParsingHelper.getNumberOfNodes(xpathExpression);
 			List<PostDetail> replyList = new LinkedList<PostDetail>();
 			for(int index = 1; index < nodeCount; index++) {
 				
-				PostDetail reply = constructPostDetail(domParsingHelper, xpathExpression, index);
+				PostDetail reply = constructPostDetail(domParsingHelper, xpathExpression, index, false);
 				replyList.add(reply);
 			}
 			
-			postDetail.setReplies(replyList);
+			Replies replies = new Replies();
+			replies.setPostReplyList(replyList);
+			
+			postDetail.setReplies(replies);
 		}
 		
 		return postDetail;
 	}
 	
 	private PostDetail constructPostDetail(DomParsingHelper domParsingHelper, 
-			String xpathExpression, int index) {
+			String xpathExpression, int index, boolean mainPost) {
 		
 		String postId = domParsingHelper.getAttributeTextValueOfNode("fid", xpathExpression, index);
 		String owner = domParsingHelper.getAttributeTextValueOfNode("owner", xpathExpression, index);
@@ -352,11 +356,13 @@ public class PostManager {
 		date = StringConvertHelper.DateConverter1(date);
 		
 		PostMetaData metaData = new PostMetaData();
-		metaData.setBoard(board);
+		if (mainPost) {
+			metaData.setBoard(board);
+			metaData.setTitle(title);
+		}
 		metaData.setOwner(owner);
 		metaData.setNick(nick);
 		metaData.setPostId(postId);
-		metaData.setTitle(title);
 		metaData.setDate(date);
 		
 		PostDetail postDetail = new PostDetail();

@@ -1,9 +1,7 @@
 
 package cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Generated;
@@ -12,7 +10,6 @@ import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -59,11 +56,11 @@ public class PostDetail {
     @JsonProperty("sign")
     private Content sign;
     /**
-     * replies
+     * post reply
      * 
      */
     @JsonProperty("replies")
-    private List<PostDetail> replies = new ArrayList<PostDetail>();
+    private Replies replies;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
@@ -159,24 +156,24 @@ public class PostDetail {
     }
 
     /**
-     * replies
+     * post reply
      * 
      */
     @JsonProperty("replies")
-    public List<PostDetail> getReplies() {
+    public Replies getReplies() {
         return replies;
     }
 
     /**
-     * replies
+     * post reply
      * 
      */
     @JsonProperty("replies")
-    public void setReplies(List<PostDetail> replies) {
+    public void setReplies(Replies replies) {
         this.replies = replies;
     }
 
-    public PostDetail withReplies(List<PostDetail> replies) {
+    public PostDetail withReplies(Replies replies) {
         this.replies = replies;
         return this;
     }
