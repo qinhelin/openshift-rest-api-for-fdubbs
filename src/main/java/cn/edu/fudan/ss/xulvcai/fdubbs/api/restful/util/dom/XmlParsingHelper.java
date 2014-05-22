@@ -108,9 +108,10 @@ public class XmlParsingHelper implements DomParsingHelper{
 			
 			if(node.hasContent() && node.getNodeType() == Node.ELEMENT_NODE) {
 				getContentValueofElementNode(content, stringBuilder, (Element)node);
+				stringBuilder.append("\n");
 			}
-			stringBuilder.append("\n");
 		}
+		
 		
 		content.setText(stringBuilder.toString());
 		return content;
@@ -150,7 +151,7 @@ public class XmlParsingHelper implements DomParsingHelper{
 		logger.debug("elementName : " + elementName);
 		logger.debug("Origin xml value : " + element.asXML());
 		if ("br".equalsIgnoreCase(elementName)) {
-			stringBuilder.append("\n");
+			//stringBuilder.append("\n");
 		}
 		else if ("a".equalsIgnoreCase(elementName)) {
 			parseParagraphOnLinkNode(content, stringBuilder, element);
