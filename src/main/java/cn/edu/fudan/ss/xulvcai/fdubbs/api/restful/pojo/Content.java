@@ -72,11 +72,7 @@ public class Content {
      * 
      */
     @JsonProperty("images")
-    public List<Image> getImages() {
-    	if (images == null) {
-    		images = new ArrayList<Image>();
-    	}
-    	
+    public List<Image> getImages() {    	
         return images;
     }
 
@@ -92,6 +88,14 @@ public class Content {
     public Content withImages(List<Image> images) {
         this.images = images;
         return this;
+    }
+    
+    public void addImage(Image image) {
+    	if (images == null) {
+    		images = new ArrayList<Image>();
+    	}
+    	
+    	images.add(image);
     }
 
     @Override

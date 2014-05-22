@@ -60,7 +60,7 @@ public class Error {
      * 
      */
     @JsonProperty("details")
-    private List<Detail> details = new ArrayList<Detail>();
+    private List<Detail> details;
     private Map<String, Object> additionalProperties;
 
     /**
@@ -144,9 +144,6 @@ public class Error {
      */
     @JsonProperty("details")
     public List<Detail> getDetails() {
-    	if (details == null) {
-    		details = new ArrayList<Detail>();
-    	}
         return details;
     }
 
@@ -162,6 +159,14 @@ public class Error {
     public Error withDetails(List<Detail> details) {
         this.details = details;
         return this;
+    }
+    
+    public void addDetail(Detail detail) {
+    	if (details == null) {
+    		details = new ArrayList<Detail>();
+    	}
+    	
+    	details.add(detail);
     }
 
     @Override

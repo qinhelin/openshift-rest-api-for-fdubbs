@@ -73,9 +73,6 @@ public class UserCookiesInfo {
      */
     @JsonProperty("cookies")
     public List<CookieKeyValuePair> getCookies() {
-    	if (cookies == null) {
-    		cookies = new ArrayList<CookieKeyValuePair>();
-    	}
         return cookies;
     }
 
@@ -91,6 +88,14 @@ public class UserCookiesInfo {
     public UserCookiesInfo withCookies(List<CookieKeyValuePair> cookies) {
         this.cookies = cookies;
         return this;
+    }
+    
+    public void addCookie(CookieKeyValuePair cookie) {
+    	if (cookies == null) {
+    		cookies = new ArrayList<CookieKeyValuePair>();
+    	}
+    	
+    	cookies.add(cookie);
     }
 
     @Override

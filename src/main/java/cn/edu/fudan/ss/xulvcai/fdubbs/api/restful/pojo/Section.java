@@ -73,9 +73,6 @@ public class Section {
      */
     @JsonProperty("boards")
     public List<BoardDetail> getBoards() {
-    	if (boards == null) {
-    		boards = new ArrayList<BoardDetail>();
-    	}
         return boards;
     }
 
@@ -91,6 +88,14 @@ public class Section {
     public Section withBoards(List<BoardDetail> boards) {
         this.boards = boards;
         return this;
+    }
+    
+    public void addBoard(BoardDetail board) {
+    	if (boards == null) {
+    		boards = new ArrayList<BoardDetail>();
+    	}
+    	
+    	boards.add(board);
     }
 
     @Override

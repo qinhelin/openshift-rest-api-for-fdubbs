@@ -133,9 +133,6 @@ public class Replies {
      */
     @JsonProperty("post_reply_list")
     public List<PostDetail> getPostReplyList() {
-    	if (postReplyList == null) {
-    		postReplyList = new ArrayList<PostDetail>();
-    	}
         return postReplyList;
     }
 
@@ -151,6 +148,14 @@ public class Replies {
     public Replies withPostReplyList(List<PostDetail> postReplyList) {
         this.postReplyList = postReplyList;
         return this;
+    }
+    
+    public void addPostReply(PostDetail reply) {
+    	if (postReplyList == null) {
+    		postReplyList = new ArrayList<PostDetail>();
+    	}
+    	
+    	postReplyList.add(reply);
     }
 
     @Override

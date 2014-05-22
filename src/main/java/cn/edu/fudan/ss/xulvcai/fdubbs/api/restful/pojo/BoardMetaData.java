@@ -148,9 +148,6 @@ public class BoardMetaData {
      */
     @JsonProperty("managers")
     public List<String> getManagers() {
-    	if (managers == null) {
-    		managers = new ArrayList<String>();
-    	}
         return managers;
     }
 
@@ -167,6 +164,14 @@ public class BoardMetaData {
     public BoardMetaData withManagers(List<String> managers) {
         this.managers = managers;
         return this;
+    }
+    
+    public void addManager(String manager) {
+    	if (managers == null) {
+    		managers = new ArrayList<String>();
+    	}
+    	
+    	managers.add(manager);
     }
 
     /**

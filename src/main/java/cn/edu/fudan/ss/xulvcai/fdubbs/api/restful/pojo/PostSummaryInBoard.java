@@ -133,9 +133,6 @@ public class PostSummaryInBoard {
      */
     @JsonProperty("post_summary_list")
     public List<PostSummary> getPostSummaryList() {
-    	if (postSummaryList == null) {
-    		postSummaryList = new ArrayList<PostSummary>();
-    	}
         return postSummaryList;
     }
 
@@ -151,6 +148,14 @@ public class PostSummaryInBoard {
     public PostSummaryInBoard withPostSummaryList(List<PostSummary> postSummaryList) {
         this.postSummaryList = postSummaryList;
         return this;
+    }
+    
+    public void addPostSummary(PostSummary postSummary) {
+    	if (postSummaryList == null) {
+    		postSummaryList = new ArrayList<PostSummary>();
+    	}
+    	
+    	postSummaryList.add(postSummary);
     }
 
     @Override

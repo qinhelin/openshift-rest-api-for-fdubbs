@@ -1,7 +1,6 @@
 package cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.dom;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -175,7 +174,7 @@ public class XmlParsingHelper implements DomParsingHelper{
 			Image image = new Image();
 			image.setRef(linkRef);
 			image.setPos(stringBuilder.length());
-			content.getImages().add(image);
+			content.addImage(image);
 		}
 		else {
 			stringBuilder.append(linkRef);

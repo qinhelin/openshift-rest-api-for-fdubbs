@@ -133,9 +133,6 @@ public class MailSummaryInbox {
      */
     @JsonProperty("mail_summary_list")
     public List<MailSummary> getMailSummaryList() {
-    	if (mailSummaryList == null) {
-    		mailSummaryList = new ArrayList<MailSummary>();
-    	}
         return mailSummaryList;
     }
 
@@ -151,6 +148,14 @@ public class MailSummaryInbox {
     public MailSummaryInbox withMailSummaryList(List<MailSummary> mailSummaryList) {
         this.mailSummaryList = mailSummaryList;
         return this;
+    }
+    
+    public void addMailSummary(MailSummary mailSummary) {
+    	if (mailSummaryList == null) {
+    		mailSummaryList = new ArrayList<MailSummary>();
+    	}
+    	
+    	mailSummaryList.add(mailSummary);
     }
 
     @Override
