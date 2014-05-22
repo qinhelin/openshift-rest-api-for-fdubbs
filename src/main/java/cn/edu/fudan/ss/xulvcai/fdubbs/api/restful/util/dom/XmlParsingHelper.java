@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Content;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Image;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.FileUtils;
 
 
 
@@ -215,14 +216,14 @@ public class XmlParsingHelper implements DomParsingHelper{
 	
 	public static void main(String[] args) throws Exception {
 		
-		PropertyConfigurator.configure("src/main/resource/log4j.properties");
+		//PropertyConfigurator.configure("src/main/resource/log4j.properties");
 		
 		
-		String contentString = "<?xml version=\"1.0\" encoding=\"gb18030\"?><?xml-stylesheet type=\"text/xsl\" href=\"../xsl/bbs.xsl?v1416\"?><bbscon link='con' bid='40' anony='0' attach='0'><session m=''><p>lt  </p><u>hidennis</u><f><b>Arch_Compiler</b><b>C</b><b>Database</b><b>Emprise</b><b>Fantasy</b><b>FDU_Software</b><b>Feelings</b><b>FM_Ecommodity</b><b>FM_Ticket</b><b>Geography</b><b>Graduate</b><b>GuangDong</b><b>History</b><b>Java</b><b>Job_Intern</b><b>Job_IT</b><b>Job_Servant</b><b>Joke</b><b>KaoYan</b><b>Lessons</b><b>Love</b><b>M_GuangHua</b><b>M_Library</b><b>M_Zhangjiang</b><b>Mac</b><b>Magpie_Bridge</b><b>MerchantAgent</b><b>MobilePhone</b><b>Movie</b><b>MS_Windows</b><b>Net_Resource</b><b>Network</b><b>News</b><b>NR_Movie</b><b>NR_Music</b><b>NR_TV</b><b>Outdoors</b><b>PIC</b><b>Practice</b><b>Single</b><b>Software_06</b><b>Travel</b><b>TV</b><b>Undergraduate</b><b>Unix</b><b>Virus</b><b>Zone_C.S.</b><b>Zone_Software</b><b>OMTV</b><b>Employees</b><b>FM_PC</b><b>IT</b><b>ZJSecondhand</b><b>Losers</b><b>MyShow</b><b>Teacher</b><b>Badminton</b><b>Heart</b><b>Food</b><b>Photography</b><b>Railway</b><b>Android</b><b>Job_Plaza</b><b>M_Career</b></f></session><po fid='363147' tlast='1'><owner>xiaoxiaowu</owner><nick>xiaoxiaowu</nick><board>Job_Intern</board><title>2014微软实习生技术类职位网申今天就要截止了&#160;&#160;&#160;&#160;&#160;未来一触即变，IT女</title><date>2014年03月31日12:11:41 星期一</date>"
-				+ "<pa m=\"t\"><p><a i=\"i\" href=\"http://bbs.fudan.edu.cn/upload/PIC/1266584358-5351.jpg\" /></p><p>eBay中国技术研发中心2014实习生网申启动！<a i=\"i\" href=\"http://bbs.fudan.edu.cn/upload/PIC/1266584358-5351.jpg\" />（2014暑期项目召集令！）</p><p><br /></p><p>想在一流的平台一窥电子商务的奥秘吗？想亲身参与前沿技术的创新项目吗？想和eBay, PayPal的大牛们一起参与云计算，大数据，机器学习，商业和风险分析的深入研讨吗? eBay Inc. 将为你提供丰富而有趣的实习平台，实现你的梦想！</p><p>欢迎计算机，软件，电子科学与工程，数学与统计和经济管理，生物等专业和方向大三和研究生一年级，二年级的学生</p><p>在这里</p><p>您将会有机会参加eBay Inc.暑期两个月创新研发项目中 ！</p><p>50%的机会将会在明年转成正式员工！ </p><p>您可以有长期实习的机会！</p><p>度过充实而丰富的暑假！</p><p><br /></p><p>网申及各职位介绍：<a href=\"http://vip.yingjiesheng.com/2014/ebay\" /></p><p><br /></p><p>校园宣讲及笔试行程：（以网站上的信息为准）</p><p>2014年3月29日 南京大学仙林校区 10:00AM   仙林校区10食堂3F就业中心302</p><p>2014年4月 1日   同济大学嘉定校区 15:00PM   济人楼312</p><p>2014年4月2日   交通大学闵行校区 14:00PM   学术活动中心宣讲厅</p><p>2014年4月8日   复旦大学张江校区 14:00PM   张江行政楼106</p><p>2014年4月11日 浙江大学玉泉校区18:00PM   永谦第一报告厅</p><p><br /></p><p>宣讲会将会介绍eBay Inc. 最新动向，以及在云技术，搜索，大数据等各个方向的技术成就，同时我们会分享2014 intern program的具体信息。</p><p>宣讲后讲直接进行笔试，宣讲会将会公布笔试的具体地点。</p><p>如有任何问题，可以发email到 interns@ebay.com ,我们将尽快的回复您。</p><p> </p><p>可以扫描亿贝技术招聘的官方微信，我们会有实时校招信息更新</p><p><br /></p><p><br /></p><p>招聘流程：</p><p>1. 宣讲之前在线填写简历，简历请标明GPA和专业排名</p><p>请登入<a href=\"http://vip.yingjiesheng.com/2014/ebay\" />进行在线申请（请在宣讲会之前提交简历，会根据您的简历信息安排相应的笔试场地）</p><p>详细职位信息及申请请点击<a href=\"http://vip.yingjiesheng.com/2014/ebay/interns_hp.html\" /></p><p>实习生创新项目请参考：<a href=\"http://vip.yingjiesheng.com/2014/ebay/interns_hd.html\" /></p><p><br /></p><p><br /></p></pa>"
-				+ "<pa m='s'><p>--</p><p><c h='0' f='37' b='40'></c><c h='1' f='33' b='40'>※&#160;来源:·日月光华&#160;bbs.fudan.edu.cn·HTTP&#160;[FROM:&#160;58.209.191.*]</c><c h='0' f='37' b='40'></c></p></pa></po></bbscon>";
-		DomParsingHelper domParsingHelper = XmlParsingHelper.parseText(contentString);
-		String xpathExpression = "bbscon/po";
+		String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+		String contentAsString = FileUtils.readFile(fileName);
+		logger.info("contentAsString : " + contentAsString);
+		DomParsingHelper domParsingHelper = XmlParsingHelper.parseText(contentAsString);
+		String xpathExpression = "bbstcon/po";
 		int index = 0;
 		String xpathOfParagraph = xpathExpression+"["+(index+1)+"]/pa";
 		

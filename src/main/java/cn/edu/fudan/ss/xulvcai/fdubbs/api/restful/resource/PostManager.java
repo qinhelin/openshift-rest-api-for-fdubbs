@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.exception.InvalidParameterException;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.BoardMetaData;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Content;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Image;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostDetail;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostMetaData;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummary;
@@ -49,21 +50,6 @@ public class PostManager {
 	private static final int POST_NUMBER_PER_REQUEST = 20;
 	
 	private static Logger logger = LoggerFactory.getLogger(PostManager.class);
-
-	public static void main(String[] args) {
-		shouldGenerateDebugData();
-		PostDetail post = new PostManager().generateDebugPostDetail();
-		logger.info("PostDetail : " + post.toString());
-	}
-	
-	private static boolean shouldGenerateDebugData() {
-		Calendar calendar = Calendar.getInstance();
-		
-		calendar.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-		int shanghaiHour = calendar.get(Calendar.HOUR_OF_DAY);
-		
-		return debugSupported && (shanghaiHour < 9);
-	}
 	
 	@GET
 	@Path("/top10")
@@ -286,24 +272,6 @@ public class PostManager {
 	}
 	
 	
-	private PostDetail generateDebugPostDetail() {
-		
-		try {
-			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
-			String contentAsString = FileUtils.readFile(fileName);
-			logger.info("contentAsString : " + contentAsString);
-			DomParsingHelper domParsingHelper = XmlParsingHelper.parseText(contentAsString);
-			return constructPostDetail(domParsingHelper, true);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
-		return new PostDetail();
-	}
-	
 	private PostDetail constructPostDetail(DomParsingHelper domParsingHelper, boolean isTopicMode) {
 		
 		String xpathExpression;
@@ -317,21 +285,38 @@ public class PostManager {
 		PostDetail postDetail = constructPostDetail(domParsingHelper, xpathExpression, 0, true);
 		
 		if(isTopicMode) {
-			int nodeCount = domParsingHelper.getNumberOfNodes(xpathExpression);
-			List<PostDetail> replyList = new LinkedList<PostDetail>();
-			for(int index = 1; index < nodeCount; index++) {
-				
-				PostDetail reply = constructPostDetail(domParsingHelper, xpathExpression, index, false);
-				replyList.add(reply);
-			}
-			
-			Replies replies = new Replies();
-			replies.setPostReplyList(replyList);
-			
+			Replies replies = constructPostReplies(domParsingHelper, xpathExpression);
 			postDetail.setReplies(replies);
 		}
 		
 		return postDetail;
+	}
+	
+	private Replies constructPostReplies(DomParsingHelper domParsingHelper, String xpathExpression) {
+		Replies replies = new Replies();
+		
+		String xpathOfNode = "bbstcon";
+		String boardId = domParsingHelper.getAttributeTextValueOfNode("bid", xpathOfNode, 0);
+		String mainPostId = domParsingHelper.getAttributeTextValueOfNode("gid", xpathOfNode, 0);
+		String isLast = domParsingHelper.getAttributeTextValueOfNode("last", xpathOfNode, 0);
+		
+		boolean hasMore = "1".equals(isLast) ? false : true;
+		replies.setBoardId(boardId);
+		replies.setMainPostId(mainPostId);
+		replies.setHasMore(hasMore);
+		
+		
+		int nodeCount = domParsingHelper.getNumberOfNodes(xpathExpression);
+		List<PostDetail> replyList = new LinkedList<PostDetail>();
+		for(int index = 1; index < nodeCount; index++) {
+			
+			PostDetail reply = constructPostDetail(domParsingHelper, xpathExpression, index, false);
+			replyList.add(reply);
+		}
+		
+		replies.setPostReplyList(replyList);
+		
+		return replies;
 	}
 	
 	private PostDetail constructPostDetail(DomParsingHelper domParsingHelper, 
@@ -370,11 +355,19 @@ public class PostManager {
 			
 			String type  = domParsingHelper.getAttributeTextValueOfNode("m", xpathOfParagraph, paraCount);
 			
-			if("t".equalsIgnoreCase(type) && !isBodyParsed) {
-				Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
-				postDetail.setBody(content);
+			if("t".equalsIgnoreCase(type)) {
+				if (!isBodyParsed) {
+					Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
+					postDetail.setBody(content);
+					
+					isBodyParsed = true;
+				}
+				else {
+					Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
+					Content body = postDetail.getBody();
+					mergeContent(content, body);
+				}
 				
-				isBodyParsed = true;
 				
 			} else if("q".equalsIgnoreCase(type)) {
 				//Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
@@ -386,6 +379,25 @@ public class PostManager {
 		}
 		
 		return postDetail;
+	}
+	
+	private void mergeContent(Content src, Content target) {
+		int originLen = target.getText().length();
+		
+		List<Image> images = src.getImages();
+		if (images != null) {
+			for(Image image : images) {
+				image.setPos(image.getPos() + originLen);
+				target.addImage(image);
+			}
+		}
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(target.getText());
+		stringBuilder.append(src.getText());
+		
+		target.setText(stringBuilder.toString());
+
 	}
 	
 	private PostSummaryInBoard getPostsByBoardIdFromServer(String authCode, 
@@ -582,23 +594,6 @@ public class PostManager {
 		return toPosts;
 	}
 	
-	private List<PostSummary> generateDebugTopPosts() {
-		List<PostSummary> toPosts = new ArrayList<PostSummary>();
-		
-		PostMetaData postMetaData = new PostMetaData();
-		postMetaData.setBoard("test");
-		postMetaData.setOwner("user");
-		postMetaData.setTitle("title");
-		postMetaData.setPostId("123456789");
-		int nodeCount = 10;
-		for(int index = 0; index < nodeCount; index++) {
-			PostSummary topPost = new PostSummary();
-			topPost.setPostMetaData(postMetaData);
-			topPost.setCount("1001");
-			toPosts.add(topPost);
-		}
-		return toPosts;
-	}
 	
 	private PostSummary constructTopPost(DomParsingHelper domParsingHelper, String xpathExpression, int index) {
 		
@@ -620,5 +615,71 @@ public class PostManager {
 		topPost.setCount(count);
 
 		return topPost;
+	}
+	
+	private static boolean shouldGenerateDebugData() {
+		Calendar calendar = Calendar.getInstance();
+		
+		calendar.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+		int shanghaiHour = calendar.get(Calendar.HOUR_OF_DAY);
+		
+		return debugSupported && (shanghaiHour < 9);
+	}
+	
+	private List<PostSummary> generateDebugTopPosts() {
+		List<PostSummary> toPosts = new ArrayList<PostSummary>();
+		
+		try {
+			
+			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_top_10.xml";
+			String contentAsString = FileUtils.readFile(fileName);
+			logger.info("contentAsString : " + contentAsString);
+			DomParsingHelper domParsingHelper = XmlParsingHelper.parseText(contentAsString);
+			
+			String xpathOfBoard = "/bbstop10/top";
+			int nodeCount = domParsingHelper.getNumberOfNodes(xpathOfBoard);
+			
+		
+			for(int index = 0; index < nodeCount; index++) {
+				PostSummary topPost = constructTopPost(domParsingHelper, xpathOfBoard, index);
+				toPosts.add(topPost);
+			}
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return toPosts;
+	}
+	
+	
+	private PostDetail generateDebugPostDetail() {
+		
+		try {
+			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			String contentAsString = FileUtils.readFile(fileName);
+			logger.info("contentAsString : " + contentAsString);
+			DomParsingHelper domParsingHelper = XmlParsingHelper.parseText(contentAsString);
+			return constructPostDetail(domParsingHelper, true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new PostDetail();
+	}
+	
+	
+	public static void main(String[] args) {
+		shouldGenerateDebugData();
+		
+		PostManager pm = new PostManager();
+		
+		List<PostSummary> toPosts = pm.generateDebugTopPosts();
+		logger.info("PostSummary List : " + toPosts.toString());
+		
+		PostDetail post = pm.generateDebugPostDetail();
+		logger.info("PostDetail : " + post.toString());
 	}
 }

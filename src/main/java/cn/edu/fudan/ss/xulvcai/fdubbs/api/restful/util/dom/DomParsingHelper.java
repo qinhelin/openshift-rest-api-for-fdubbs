@@ -1,7 +1,5 @@
 package cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.dom;
 
-import java.util.List;
-
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Content;
 
 public interface DomParsingHelper {
