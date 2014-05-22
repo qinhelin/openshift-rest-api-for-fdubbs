@@ -20,7 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * post detail
  * 
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
     "post_meta_data",
