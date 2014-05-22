@@ -375,9 +375,15 @@ public class PostManager {
 			
 			String xpathOfParaContent = xpathOfParagraph+"["+(paraCount+1)+"]/p";
 			
+			String type  = domParsingHelper.getAttributeTextValueOfNode("m", xpathOfParagraph, paraCount);
+			//ignore the sign
+			if("s".equalsIgnoreCase(type)) {
+				continue;
+			}
+			
 			Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
 
-			String type  = domParsingHelper.getAttributeTextValueOfNode("m", xpathOfParagraph, paraCount);
+			
 			if("t".equalsIgnoreCase(type)) {
 				postDetail.setBody(content);
 			} else if("q".equalsIgnoreCase(type)) {
