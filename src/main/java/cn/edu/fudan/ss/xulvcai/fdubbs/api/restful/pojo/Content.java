@@ -41,8 +41,8 @@ public class Content {
      * 
      */
     @JsonProperty("images")
-    private List<Image> images = new ArrayList<Image>();
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private List<Image> images;
+    private Map<String, Object> additionalProperties;
 
     /**
      * text content
@@ -73,6 +73,10 @@ public class Content {
      */
     @JsonProperty("images")
     public List<Image> getImages() {
+    	if (images == null) {
+    		images = new ArrayList<Image>();
+    	}
+    	
         return images;
     }
 
@@ -107,11 +111,17 @@ public class Content {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 

@@ -13,7 +13,6 @@ import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -60,14 +59,14 @@ public class BoardMetaData {
      * 
      */
     @JsonProperty("managers")
-    private List<String> managers = new ArrayList<String>();
+    private List<String> managers;
     /**
      * total number of postes in the board
      * 
      */
     @JsonProperty("post_number")
     private Integer postNumber;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties;
 
     /**
      * board id, sometimes there is no way to get this
@@ -149,6 +148,9 @@ public class BoardMetaData {
      */
     @JsonProperty("managers")
     public List<String> getManagers() {
+    	if (managers == null) {
+    		managers = new ArrayList<String>();
+    	}
         return managers;
     }
 
@@ -207,11 +209,17 @@ public class BoardMetaData {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 

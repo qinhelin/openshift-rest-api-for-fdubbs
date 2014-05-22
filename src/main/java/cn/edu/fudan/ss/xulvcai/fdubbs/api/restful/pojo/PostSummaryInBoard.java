@@ -12,7 +12,6 @@ import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -56,8 +55,8 @@ public class PostSummaryInBoard {
      * 
      */
     @JsonProperty("post_summary_list")
-    private List<PostSummary> postSummaryList = new ArrayList<PostSummary>();
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private List<PostSummary> postSummaryList;
+    private Map<String, Object> additionalProperties;
 
     /**
      * board meta data
@@ -134,6 +133,9 @@ public class PostSummaryInBoard {
      */
     @JsonProperty("post_summary_list")
     public List<PostSummary> getPostSummaryList() {
+    	if (postSummaryList == null) {
+    		postSummaryList = new ArrayList<PostSummary>();
+    	}
         return postSummaryList;
     }
 
@@ -168,11 +170,17 @@ public class PostSummaryInBoard {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 

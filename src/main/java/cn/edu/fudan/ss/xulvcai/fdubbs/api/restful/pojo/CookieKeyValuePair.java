@@ -11,7 +11,6 @@ import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -42,7 +41,7 @@ public class CookieKeyValuePair {
      */
     @JsonProperty("cookie_value")
     private String cookieValue;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties;
 
     /**
      * cookie_name
@@ -107,11 +106,17 @@ public class CookieKeyValuePair {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 

@@ -3,11 +3,12 @@ package cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Generated;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -52,7 +53,7 @@ public class BoardDetail {
      */
     @JsonProperty("has_unread_post")
     private Boolean hasUnreadPost;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties;
 
     /**
      * board meta data
@@ -163,11 +164,17 @@ public class BoardDetail {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 

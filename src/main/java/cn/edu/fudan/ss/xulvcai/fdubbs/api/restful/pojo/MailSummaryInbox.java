@@ -12,7 +12,6 @@ import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -56,8 +55,8 @@ public class MailSummaryInbox {
      * 
      */
     @JsonProperty("mail_summary_list")
-    private List<MailSummary> mailSummaryList = new ArrayList<MailSummary>();
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private List<MailSummary> mailSummaryList;
+    private Map<String, Object> additionalProperties;
 
     /**
      * start mail number
@@ -134,6 +133,9 @@ public class MailSummaryInbox {
      */
     @JsonProperty("mail_summary_list")
     public List<MailSummary> getMailSummaryList() {
+    	if (mailSummaryList == null) {
+    		mailSummaryList = new ArrayList<MailSummary>();
+    	}
         return mailSummaryList;
     }
 
@@ -168,11 +170,17 @@ public class MailSummaryInbox {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 

@@ -12,7 +12,6 @@ import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -42,8 +41,8 @@ public class Section {
      * 
      */
     @JsonProperty("boards")
-    private List<BoardDetail> boards = new ArrayList<BoardDetail>();
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private List<BoardDetail> boards;
+    private Map<String, Object> additionalProperties;
 
     /**
      * section meta data
@@ -74,6 +73,9 @@ public class Section {
      */
     @JsonProperty("boards")
     public List<BoardDetail> getBoards() {
+    	if (boards == null) {
+    		boards = new ArrayList<BoardDetail>();
+    	}
         return boards;
     }
 
@@ -108,11 +110,17 @@ public class Section {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 

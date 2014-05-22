@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Generated;
+
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -53,8 +55,8 @@ public class Replies {
      * 
      */
     @JsonProperty("post_reply_list")
-    private List<PostDetail> postReplyList = new ArrayList<PostDetail>();
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private List<PostDetail> postReplyList;
+    private Map<String, Object> additionalProperties;
 
     /**
      * board id
@@ -131,6 +133,9 @@ public class Replies {
      */
     @JsonProperty("post_reply_list")
     public List<PostDetail> getPostReplyList() {
+    	if (postReplyList == null) {
+    		postReplyList = new ArrayList<PostDetail>();
+    	}
         return postReplyList;
     }
 
@@ -165,11 +170,17 @@ public class Replies {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 

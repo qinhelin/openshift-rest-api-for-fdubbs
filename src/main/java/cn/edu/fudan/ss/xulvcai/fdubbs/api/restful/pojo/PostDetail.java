@@ -20,7 +20,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * post detail
  * 
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
     "post_meta_data",
@@ -61,7 +61,7 @@ public class PostDetail {
      */
     @JsonProperty("replies")
     private Replies replies;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties;
 
     /**
      * post meta data
@@ -195,11 +195,17 @@ public class PostDetail {
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         return this.additionalProperties;
     }
 
     @JsonAnySetter
     public void setAdditionalProperties(String name, Object value) {
+    	if (additionalProperties == null) {
+    		additionalProperties = new HashMap<String, Object>();
+    	}
         this.additionalProperties.put(name, value);
     }
 
