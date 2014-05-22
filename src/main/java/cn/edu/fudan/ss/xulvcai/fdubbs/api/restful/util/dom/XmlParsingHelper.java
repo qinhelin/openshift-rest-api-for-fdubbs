@@ -103,8 +103,11 @@ public class XmlParsingHelper implements DomParsingHelper{
 		for(int index = 0; index < nodeNum; index++) {
 			Node node = getNodeByXpathAndIndex(xpathExpression, index);
 			
+			
 			if(node == null) 
 				continue;
+			
+			logger.info("Node Value : " + node.asXML());
 			
 			if(node.hasContent() && node.getNodeType() == Node.ELEMENT_NODE) {
 				getContentValueofElementNode(content, stringBuilder, (Element)node);
@@ -112,7 +115,7 @@ public class XmlParsingHelper implements DomParsingHelper{
 			}
 		}
 		
-		
+		logger.info("Paragraph content : " + stringBuilder.toString());
 		content.setText(stringBuilder.toString());
 		return content;
 	}
@@ -122,7 +125,7 @@ public class XmlParsingHelper implements DomParsingHelper{
 													Element element) {
 		List<Node> childNodes = element.content();
 		for (Node node : childNodes) {
-			logger.debug("Child Node : " + node.asXML());
+			logger.info("Child Node : " + node.asXML());
 			if (node.getNodeType() == Node.TEXT_NODE) {
 				parseParagraphOnTextNode(stringBuilder, node);
 			}
@@ -139,7 +142,7 @@ public class XmlParsingHelper implements DomParsingHelper{
 
 	private void parseParagraphOnTextNode(StringBuilder stringBuilder, Node node) {
 		if (!"".equals(node.getText())) {
-			logger.debug("TEXT Node : " + node.getText());
+			logger.info("TEXT Node : " + node.getText());
 			stringBuilder.append(node.getText());
 		}
 	}

@@ -25,15 +25,16 @@ import org.slf4j.LoggerFactory;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.exception.InvalidParameterException;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.BoardMetaData;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Content;
-import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Image;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostDetail;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostMetaData;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummary;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummaryInBoard;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Replies;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.FileUtils;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.RESTErrorStatus;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.StringConvertHelper;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.dom.DomParsingHelper;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.dom.XmlParsingHelper;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.http.HttpClientManager;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.http.HttpParsingHelper;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.http.ReusableHttpClient;
@@ -51,6 +52,8 @@ public class PostManager {
 
 	public static void main(String[] args) {
 		shouldGenerateDebugData();
+		PostDetail post = new PostManager().generateDebugPostDetail();
+		logger.info("PostDetail : " + post.toString());
 	}
 	
 	private static boolean shouldGenerateDebugData() {
@@ -282,35 +285,23 @@ public class PostManager {
 		return constructPostDetail(domParsingHelper, true);
 	}
 	
+	
 	private PostDetail generateDebugPostDetail() {
 		
+		try {
+			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			String contentAsString = FileUtils.readFile(fileName);
+			logger.info("contentAsString : " + contentAsString);
+			DomParsingHelper domParsingHelper = XmlParsingHelper.parseText(contentAsString);
+			return constructPostDetail(domParsingHelper, true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		PostMetaData postMetaData = new PostMetaData();
-		postMetaData.setBoard("Hire");
-		postMetaData.setOwner("hidennis");
-		postMetaData.setTitle("eBay中国技术研发中心2014实习生网申启动！（2014暑期项目召集令！）");
-		postMetaData.setDate("5月16日11:11");
-		postMetaData.setPostId("123456789");
 		
-		String text = "eBay中国技术研发中心2014实习生网申启动！（2014暑期项目召集令！）\n\n\n" +
-					"想在一流的平台一窥电子商务的奥秘吗？想亲身参与前沿技术的创新项目吗？想和eBay, PayPal的大牛们一起参与云计算，大数据，机器学习，商业和风险分析的深入研讨吗? "
-					+ "eBay Inc. 将为你提供丰富而有趣的实习平台，实现你的梦想！欢迎计算机，软件，电子科学与工程，数学与统计和经济管理，生物等专业和方向大三和研究生一年级，二年级的学生"
-					+ "在这里您将会有机会参加eBay Inc.暑期两个月创新研发项目中 ！50%的机会将会在明年转成正式员工！ 您可以有长期实习的机会！度过充实而丰富的暑假！"
-					+ "网申及各职位介绍：http://vip.yingjiesheng.com/2014/ebay \n"
-					+ "如有任何问题，可以发email到 interns@ebay.com ,我们将尽快的回复您。";
 		
-		List<Image> images = new ArrayList<Image>();
-		images.add(new Image().withRef("aa").withPos(10));
-		images.add(new Image().withRef("bb").withPos(25));
-		
-		Content body = new Content();
-		body.setText(text);
-		body.setImages(images);
-		
-		PostDetail postDetail = new PostDetail();
-		postDetail.setPostMetaData(postMetaData);
-		postDetail.setBody(body);
-		return postDetail;
+		return new PostDetail();
 	}
 	
 	private PostDetail constructPostDetail(DomParsingHelper domParsingHelper, boolean isTopicMode) {
@@ -371,25 +362,25 @@ public class PostManager {
 		String xpathOfParagraph = xpathExpression+"["+(index+1)+"]/pa";
 		
 		int paraNum = domParsingHelper.getNumberOfNodes(xpathOfParagraph);
+		boolean isBodyParsed = false;
+		
 		for(int paraCount = 0; paraCount < paraNum; paraCount++) {
 			
 			String xpathOfParaContent = xpathOfParagraph+"["+(paraCount+1)+"]/p";
 			
 			String type  = domParsingHelper.getAttributeTextValueOfNode("m", xpathOfParagraph, paraCount);
-			//ignore the sign
-			if("s".equalsIgnoreCase(type)) {
-				continue;
-			}
 			
-			Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
-
-			
-			if("t".equalsIgnoreCase(type)) {
+			if("t".equalsIgnoreCase(type) && !isBodyParsed) {
+				Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
 				postDetail.setBody(content);
+				
+				isBodyParsed = true;
+				
 			} else if("q".equalsIgnoreCase(type)) {
-				postDetail.setQoute(content);
+				//Content content = domParsingHelper.getContentValueofNode(xpathOfParaContent);
+				//postDetail.setBody(content);
 			} else if("s".equalsIgnoreCase(type)) {
-				postDetail.setSign(content);
+				
 			}
 			
 		}
