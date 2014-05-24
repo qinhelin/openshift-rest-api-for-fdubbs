@@ -539,6 +539,10 @@ public class PostManager {
 
 			if (value.length() > MAX_LEN_OF_QOUTE_CONTENT) {
 				value = value.substring(0, MAX_LEN_OF_QOUTE_CONTENT);
+				idx = value.lastIndexOf("\n");
+				if (idx > 0 && (value.length() - idx < 10)) {
+					value = value.substring(0, idx);
+				}
 				value = value.concat("\n... ...");
 			}
 
