@@ -48,7 +48,7 @@ public class PostDetail {
      * 
      */
     @JsonProperty("qoute")
-    private Content qoute;
+    private Qoute qoute;
     /**
      * content
      * 
@@ -114,7 +114,7 @@ public class PostDetail {
      * 
      */
     @JsonProperty("qoute")
-    public Content getQoute() {
+    public Qoute getQoute() {
         return qoute;
     }
 
@@ -123,11 +123,11 @@ public class PostDetail {
      * 
      */
     @JsonProperty("qoute")
-    public void setQoute(Content qoute) {
+    public void setQoute(Qoute qoute) {
         this.qoute = qoute;
     }
 
-    public PostDetail withQoute(Content qoute) {
+    public PostDetail withQoute(Qoute qoute) {
         this.qoute = qoute;
         return this;
     }
