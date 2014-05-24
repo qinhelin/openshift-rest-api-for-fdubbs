@@ -411,13 +411,16 @@ public class PostManager {
 		int nodeCount = domParsingHelper.getNumberOfNodes(xpathExpression);
 		List<PostDetail> replyList = new LinkedList<PostDetail>();
 
+		String lastReplyId = null;
 		for (int index = excludeFirstPost ? 1 : 0; index < nodeCount; index++) {
 
 			PostDetail reply = constructPostDetail(domParsingHelper,
 					xpathExpression, index, false);
 			replyList.add(reply);
+			lastReplyId = reply.getPostMetaData().getPostId();
 		}
 
+		replies.setLastReplyId(lastReplyId);
 		replies.setPostReplyList(replyList);
 
 		return replies;

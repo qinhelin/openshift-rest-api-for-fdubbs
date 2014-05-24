@@ -28,6 +28,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "board_id",
     "main_post_id",
     "has_more",
+    "last_reply_id",
     "post_reply_list"
 })
 public class Replies {
@@ -44,6 +45,12 @@ public class Replies {
      */
     @JsonProperty("main_post_id")
     private String mainPostId;
+    /**
+     * last reply id
+     * 
+     */
+    @JsonProperty("last_reply_id")
+    private String lastReplyId;
     /**
      * if has more reply
      * 
@@ -124,6 +131,29 @@ public class Replies {
 
     public Replies withHasMore(Boolean hasMore) {
         this.hasMore = hasMore;
+        return this;
+    }
+    
+    /**
+     * last reply id
+     * 
+     */
+    @JsonProperty("last_reply_id")
+    public String getLastReplyId() {
+        return lastReplyId;
+    }
+
+    /**
+     * last reply id
+     * 
+     */
+    @JsonProperty("last_reply_id")
+    public void setLastReplyId(String lastReplyId) {
+        this.lastReplyId = lastReplyId;
+    }
+
+    public Replies withLastReplyId(String lastReplyId) {
+        this.lastReplyId = lastReplyId;
         return this;
     }
 
