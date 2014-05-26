@@ -835,8 +835,11 @@ public class PostManager {
 
 		calendar.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		int shanghaiHour = calendar.get(Calendar.HOUR_OF_DAY);
+		
+		boolean debug = debugSupported && (shanghaiHour < 9);
 
-		return debugSupported && (shanghaiHour < 9);
+		logger.info("shouldGenerateDebugData : " + debug);
+		return debug;
 	}
 
 	private List<PostSummary> generateDebugTopPosts() {
