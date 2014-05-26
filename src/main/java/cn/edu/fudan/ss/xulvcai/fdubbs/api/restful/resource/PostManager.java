@@ -874,7 +874,8 @@ public class PostManager {
 	private PostDetail generateDebugPostDetail() {
 
 		try {
-			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			//String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			String fileName = "test_post_detail.xml";
 			String contentAsString = FileUtils.readFile(fileName);
 			logger.info("contentAsString : " + contentAsString);
 			DomParsingHelper domParsingHelper = XmlParsingHelper
@@ -891,7 +892,8 @@ public class PostManager {
 	private Replies generateDebugPostReplies() {
 
 		try {
-			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			//String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			String fileName = "test_post_replies.xml";
 			String contentAsString = FileUtils.readFile(fileName);
 			logger.info("contentAsString : " + contentAsString);
 			DomParsingHelper domParsingHelper = XmlParsingHelper
