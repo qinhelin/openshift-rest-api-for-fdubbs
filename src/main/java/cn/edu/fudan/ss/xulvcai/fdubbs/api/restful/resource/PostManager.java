@@ -847,7 +847,8 @@ public class PostManager {
 
 		try {
 
-			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_top_10.xml";
+			//String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_top_10.xml";
+			String fileName = "test_top_10.xml";
 			String contentAsString = FileUtils.readFile(fileName);
 			logger.info("contentAsString : " + contentAsString);
 			DomParsingHelper domParsingHelper = XmlParsingHelper
