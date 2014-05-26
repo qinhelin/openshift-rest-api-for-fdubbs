@@ -6,8 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.log4j.PropertyConfigurator;
+
 public class FileUtils {
 
+    private static Logger logger = LoggerFactory.getLogger(FileUtils.class);
 	/**
      * 将文本文件中的内容读入到buffer中
      * @param buffer buffer
@@ -20,6 +25,11 @@ public class FileUtils {
     	ClassLoader classLoader=FileUtils.class.getClassLoader();
 
     	InputStream is=classLoader.getResourceAsStream(filePath);
+    	
+    	if (is == null) {
+    	    logger.info("InputStream is null!");
+    	}
+    	
         //InputStream is = new FileInputStream(filePath);
         String line; // 用来保存每行读取的内容
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "gb18030"));
