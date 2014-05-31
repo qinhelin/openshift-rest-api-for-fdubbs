@@ -32,6 +32,7 @@ import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummary;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummaryInBoard;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Qoute;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Replies;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.DebugHelper;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.FileUtils;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.RESTErrorStatus;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.StringConvertHelper;
@@ -45,7 +46,6 @@ import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.http.HttpParsingHelper.Ht
 @Path("/post")
 public class PostManager {
 
-	private static final boolean debugSupported = true;
 	private static final String NORMAL_LIST_MODE = "normal";
 	private static final String TOPIC_LIST_MODE = "topic";
 	private static final int POST_NUMBER_PER_REQUEST = 20;
@@ -267,7 +267,7 @@ public class PostManager {
 	private Replies getPostRepliesByBoardIdAndPostIdFromServer(String authCode,
 			int boardId, long mainPostId, long lastReplyId) throws Exception {
 
-		if (shouldGenerateDebugData()) {
+		if (DebugHelper.shouldGenerateDebugData()) {
 			return generateDebugPostReplies();
 		}
 
@@ -339,7 +339,7 @@ public class PostManager {
 	private PostDetail getPostDetailByBoardNameAndPostIdFromServer(
 			String authCode, String boardName, long postId) throws Exception {
 
-		if (shouldGenerateDebugData()) {
+		if (DebugHelper.shouldGenerateDebugData()) {
 			return generateDebugPostDetail();
 		}
 
@@ -768,7 +768,7 @@ public class PostManager {
 
 	private List<PostSummary> getTopPostsFromServer(String authCode)
 			throws Exception {
-		if (shouldGenerateDebugData()) {
+		if (DebugHelper.shouldGenerateDebugData()) {
 			return generateDebugTopPosts();
 		}
 
@@ -828,18 +828,6 @@ public class PostManager {
 		topPost.setCount(count);
 
 		return topPost;
-	}
-
-	private static boolean shouldGenerateDebugData() {
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-		int shanghaiHour = calendar.get(Calendar.HOUR_OF_DAY);
-		
-		boolean debug = debugSupported && (shanghaiHour < 9);
-
-		logger.info("shouldGenerateDebugData : " + debug);
-		return debug;
 	}
 
 	private List<PostSummary> generateDebugTopPosts() {
@@ -911,7 +899,6 @@ public class PostManager {
 		PostManager pm = new PostManager();
 
 		/*
-		 * shouldGenerateDebugData();
 		 * 
 		 * List<PostSummary> toPosts = pm.generateDebugTopPosts();
 		 * logger.info("PostSummary List : " + toPosts.toString());
