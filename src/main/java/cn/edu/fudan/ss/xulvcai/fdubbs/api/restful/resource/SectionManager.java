@@ -138,6 +138,10 @@ public class SectionManager {
 	private Section getSectionDetailFromServer(String authCode, String sectionId)
 			throws Exception {
 
+		if (DebugHelper.shouldGenerateDebugData()) {
+			return generateDebugSectionDetail();
+		}
+		
 		URI uri = new URIBuilder().setScheme("http")
 				.setHost("bbs.fudan.edu.cn").setPath("/bbs/boa")
 				.setParameter("s", sectionId).build();
@@ -269,10 +273,28 @@ public class SectionManager {
 		
 		return sections;
 	}
+	
+	private Section generateDebugSectionDetail() {
+		
+		try {
+			
+			String fileName = "test_section_detail.xml";
+			String contentAsString = FileUtils.readFile(fileName);
+			logger.info("contentAsString : " + contentAsString);
+			
+			return parseSectionDetail("0", contentAsString);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new Section();
+	}
 
 	public static void main(String[] args) {
 
 		SectionManager sm = new SectionManager();
 		sm.generateDebugAllSections();
+		sm.generateDebugSectionDetail();
 	}
 }
