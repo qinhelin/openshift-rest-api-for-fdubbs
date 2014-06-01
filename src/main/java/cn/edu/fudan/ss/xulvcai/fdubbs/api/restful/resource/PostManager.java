@@ -898,17 +898,17 @@ public class PostManager {
 	public static void main(String[] args) {
 		PostManager pm = new PostManager();
 
+		
+		List<PostSummary> toPosts = pm.generateDebugTopPosts();
+		logger.info("PostSummary List : " + toPosts.toString());
+		 
+		PostDetail post = pm.generateDebugPostDetail();
+		logger.info("PostDetail : " + post.toString());
+		 
+		Replies replies = pm.generateDebugPostReplies();
+		logger.info("Post Replies : " + replies.toString());
+		
 		/*
-		 * 
-		 * List<PostSummary> toPosts = pm.generateDebugTopPosts();
-		 * logger.info("PostSummary List : " + toPosts.toString());
-		 * 
-		 * PostDetail post = pm.generateDebugPostDetail();
-		 * logger.info("PostDetail : " + post.toString());
-		 * 
-		 * Replies replies = pm.generateDebugPostReplies();
-		 * logger.info("Post Replies : " + replies.toString());
-		 */
 		String textValue = "【 在 zhangdepei (小脸唯一) 的大作中提到: 】\n"
 				+ ": 我好像都是用车的过程才能认识自己的需求，买的过程研究再细致都没用。。。\n"
 				+ ": 【 在 ghostlee (种瓜得瓜，种豆得豆) 的大作中提到: 】"
@@ -918,5 +918,6 @@ public class PostManager {
 		String content = pm.getContentOfQoute(textValue);
 
 		System.out.printf("Owner : %s \n Content : %s", owner, content);
+		*/
 	}
 }
