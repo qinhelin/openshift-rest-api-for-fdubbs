@@ -32,7 +32,7 @@ public class FileUtils {
     	
         //InputStream is = new FileInputStream(filePath);
         String line; // 用来保存每行读取的内容
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "gb18030"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
         line = reader.readLine(); // 读取第一行
         while (line != null) { // 如果 line 为空说明读完了
             buffer.append(line); // 将读到的内容添加到 buffer 中
