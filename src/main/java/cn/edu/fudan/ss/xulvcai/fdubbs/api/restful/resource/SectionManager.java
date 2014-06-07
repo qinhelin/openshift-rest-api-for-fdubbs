@@ -204,8 +204,9 @@ public class SectionManager {
 		String sectionDesc = content.substring(idx + 1);
 		
 		idx = sectionDesc.indexOf("[");
-		String desc = sectionDesc.substring(0, idx);
-		String category = sectionDesc.substring(idx + 1, sectionDesc.length());
+		int idx1 = sectionDesc.indexOf("]");
+		String desc = sectionDesc.substring(0, idx).trim();
+		String category = sectionDesc.substring(idx + 1, idx1 - 1);
 		
 		SectionMetaData metaData = new SectionMetaData();
 		metaData.setSectionId(sectionId);
