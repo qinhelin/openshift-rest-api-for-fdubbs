@@ -176,10 +176,14 @@ public class SectionManager {
 		String sectionId = content.substring(0, idx);
 		String sectionDesc = content.substring(idx + 1);
 		
+		idx = sectionDesc.indexOf("[");
+		String desc = sectionDesc.substring(0, idx);
+		String category = sectionDesc.substring(idx + 1, sectionDesc.length());
 		
 		SectionMetaData metaData = new SectionMetaData();
 		metaData.setSectionId(sectionId);
-		metaData.setSectionDesc(sectionDesc);
+		metaData.setSectionDesc(desc);
+		metaData.setCategory(category);
 		
 		return metaData;
 	}

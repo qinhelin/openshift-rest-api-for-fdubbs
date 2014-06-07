@@ -24,7 +24,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
     "section_id",
-    "section_desc"
+    "section_desc",
+    "category"
 })
 public class SectionMetaData {
 
@@ -40,6 +41,12 @@ public class SectionMetaData {
      */
     @JsonProperty("section_desc")
     private String sectionDesc;
+    /**
+     * section category
+     * 
+     */
+    @JsonProperty("category")
+    private String category;
     private Map<String, Object> additionalProperties;
 
     /**
@@ -85,6 +92,29 @@ public class SectionMetaData {
 
     public SectionMetaData withSectionDesc(String sectionDesc) {
         this.sectionDesc = sectionDesc;
+        return this;
+    }
+    
+    /**
+     * section category
+     * 
+     */
+    @JsonProperty("category")
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * section category
+     * 
+     */
+    @JsonProperty("category")
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public SectionMetaData withCategory(String category) {
+        this.category = category;
         return this;
     }
 
