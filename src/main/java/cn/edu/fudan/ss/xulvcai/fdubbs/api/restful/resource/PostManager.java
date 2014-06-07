@@ -32,6 +32,7 @@ import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummary;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.PostSummaryInBoard;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Qoute;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.pojo.Replies;
+import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.DebugHelper;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.FileUtils;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.RESTErrorStatus;
 import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.common.StringConvertHelper;
@@ -45,7 +46,6 @@ import cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.http.HttpParsingHelper.Ht
 @Path("/post")
 public class PostManager {
 
-	private static final boolean debugSupported = true;
 	private static final String NORMAL_LIST_MODE = "normal";
 	private static final String TOPIC_LIST_MODE = "topic";
 	private static final int POST_NUMBER_PER_REQUEST = 20;
@@ -267,7 +267,7 @@ public class PostManager {
 	private Replies getPostRepliesByBoardIdAndPostIdFromServer(String authCode,
 			int boardId, long mainPostId, long lastReplyId) throws Exception {
 
-		if (shouldGenerateDebugData()) {
+		if (DebugHelper.shouldGenerateDebugData()) {
 			return generateDebugPostReplies();
 		}
 
@@ -339,7 +339,7 @@ public class PostManager {
 	private PostDetail getPostDetailByBoardNameAndPostIdFromServer(
 			String authCode, String boardName, long postId) throws Exception {
 
-		if (shouldGenerateDebugData()) {
+		if (DebugHelper.shouldGenerateDebugData()) {
 			return generateDebugPostDetail();
 		}
 
@@ -768,7 +768,7 @@ public class PostManager {
 
 	private List<PostSummary> getTopPostsFromServer(String authCode)
 			throws Exception {
-		if (shouldGenerateDebugData()) {
+		if (DebugHelper.shouldGenerateDebugData()) {
 			return generateDebugTopPosts();
 		}
 
@@ -830,21 +830,13 @@ public class PostManager {
 		return topPost;
 	}
 
-	private static boolean shouldGenerateDebugData() {
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-		int shanghaiHour = calendar.get(Calendar.HOUR_OF_DAY);
-
-		return debugSupported && (shanghaiHour < 9);
-	}
-
 	private List<PostSummary> generateDebugTopPosts() {
 		List<PostSummary> toPosts = new ArrayList<PostSummary>();
 
 		try {
 
-			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_top_10.xml";
+			//String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_top_10.xml";
+			String fileName = "test_top_10.xml";
 			String contentAsString = FileUtils.readFile(fileName);
 			logger.info("contentAsString : " + contentAsString);
 			DomParsingHelper domParsingHelper = XmlParsingHelper
@@ -870,7 +862,8 @@ public class PostManager {
 	private PostDetail generateDebugPostDetail() {
 
 		try {
-			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			//String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			String fileName = "test_post_detail.xml";
 			String contentAsString = FileUtils.readFile(fileName);
 			logger.info("contentAsString : " + contentAsString);
 			DomParsingHelper domParsingHelper = XmlParsingHelper
@@ -887,7 +880,8 @@ public class PostManager {
 	private Replies generateDebugPostReplies() {
 
 		try {
-			String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			//String fileName = "cn/edu/fudan/ss/xulvcai/fdubbs/api/restful/mock/test_post_detail.xml";
+			String fileName = "test_post_replies.xml";
 			String contentAsString = FileUtils.readFile(fileName);
 			logger.info("contentAsString : " + contentAsString);
 			DomParsingHelper domParsingHelper = XmlParsingHelper
@@ -904,18 +898,17 @@ public class PostManager {
 	public static void main(String[] args) {
 		PostManager pm = new PostManager();
 
+		
+		List<PostSummary> toPosts = pm.generateDebugTopPosts();
+		logger.info("PostSummary List : " + toPosts.toString());
+		 
+		PostDetail post = pm.generateDebugPostDetail();
+		logger.info("PostDetail : " + post.toString());
+		 
+		Replies replies = pm.generateDebugPostReplies();
+		logger.info("Post Replies : " + replies.toString());
+		
 		/*
-		 * shouldGenerateDebugData();
-		 * 
-		 * List<PostSummary> toPosts = pm.generateDebugTopPosts();
-		 * logger.info("PostSummary List : " + toPosts.toString());
-		 * 
-		 * PostDetail post = pm.generateDebugPostDetail();
-		 * logger.info("PostDetail : " + post.toString());
-		 * 
-		 * Replies replies = pm.generateDebugPostReplies();
-		 * logger.info("Post Replies : " + replies.toString());
-		 */
 		String textValue = "【 在 zhangdepei (小脸唯一) 的大作中提到: 】\n"
 				+ ": 我好像都是用车的过程才能认识自己的需求，买的过程研究再细致都没用。。。\n"
 				+ ": 【 在 ghostlee (种瓜得瓜，种豆得豆) 的大作中提到: 】"
@@ -925,5 +918,6 @@ public class PostManager {
 		String content = pm.getContentOfQoute(textValue);
 
 		System.out.printf("Owner : %s \n Content : %s", owner, content);
+		*/
 	}
 }

@@ -1,7 +1,6 @@
 package cn.edu.fudan.ss.xulvcai.fdubbs.api.restful.util.dom;
 
 import java.util.HashMap;
-import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
