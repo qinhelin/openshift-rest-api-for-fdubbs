@@ -62,7 +62,7 @@ public class SectionManager {
 	}
 
 	@GET
-	@Path("/{section_id}")
+	@Path("/detail/{section_id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSectionDetail(@CookieParam("auth_code") String authCode,
 			@PathParam("section_id") String sectionId) {
